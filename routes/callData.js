@@ -150,10 +150,11 @@ router.get("/getallocations/",async (req,res)=>{
 
 
 router.post("/",async (req,res)=>{
+    console.log("posting")
 
     try{
-
-        console.log(req.user._id)
+        console.log("req.user")
+        console.log(req.user)
         const isthere = await callData.findOne({mobNumber:req.body.mobNumber});
         console.log(req.user)
         if(isthere){

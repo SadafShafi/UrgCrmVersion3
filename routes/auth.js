@@ -47,6 +47,7 @@ router.post("/login",async (req,res)=>{
     const user = await User.findOne({
         mobNumber:req.body.mobNumber
     });
+    
     if(!user) return res.status(400).send("This number is not registered yet");
 
     const validPass = await bcrypt.compare(
@@ -60,10 +61,11 @@ router.post("/login",async (req,res)=>{
 
         //  An Auth token is returned as a header 
         //  auth-token
+        // console.log(user)
         const token = jwt.sign({_id:user._id,designation:user.designation},
             process.env.SECRET_KEY);
         // console.log({_id:user._id,designation:user.designation});
-        res.header('auth-token',token).send({"auth-token":token});
+        res.header('auth-token',token).send({"auth-token":token,"name":user.name});
 
     }catch(err){
         console.log("error")

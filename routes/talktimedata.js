@@ -12,9 +12,9 @@ router.get("/",async (req,res)=>{
 
     try{
 
-        console.log(req.user._id)
+        console.log(req.user)
 
-        res.send(await talktime.find({Id:req.user._id}));
+        res.send(await talktime.find({Id:req.user}));
         
 
     }catch(err){
@@ -38,7 +38,7 @@ router.post("/",async (req,res)=>{
             idleTime:req.body.idleTime,
             loginTime:req.body.loginTime,
             wrapupTime:req.body.wrapupTime,
-            Id:req.user._id
+            Id:req.user
 
         });
 

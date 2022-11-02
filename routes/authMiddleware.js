@@ -18,7 +18,7 @@ module.exports = function auth(req,res,next){
         
         req.user = verified._id;
         req.designation = verified.designation;
-        // console.log(req);
+        console.log("after verifacation >> ",req.user);
         next();
     }catch(err){
         console.log(err)
