@@ -1,2 +1,6 @@
 node_modules
 .env
+.htaccess
+Models/
+ecosystem.config.js
+test.js

@@ -44,4 +44,4 @@ app.use('/resetpassword',resetpassword);
 
 app.get('/',(req,res)=>res.send("<h1>Wel Come to URG CRM</h1>"));
 mongoose.connect(process.env.LINK_DB,()=>console.log("connected to BD"))
-app.listen(3000,()=>console.log(`Listning to port 3000`));
+app.listen(3012,()=>console.log(`Listning to port 3000`));
