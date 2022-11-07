@@ -18,6 +18,23 @@ router.get("/",async (req,res)=>{
     }
 });
 
+router.get("/getallocations",async (req,res)=>{
+
+    // console.log("sssssssss")
+    // console.log("hereeeeeeeeeeeeeee")
+    // console.log("allocations",req.user)
+    // // res.send("sent")
+    try{
+
+        const cursor = await callData.find({allocatedTo:req.user});
+        res.send(cursor);
+
+    }catch(err){
+        res.send(err);
+    }
+
+});
+
 router.get("/status/:status",async(req,res)=>{
     try{
 
@@ -83,9 +100,7 @@ router.get("/search/:searchby",async(req,res)=>{
                 {Id:req.user,company:req.params.searchby},
                 {Id:req.user,mobNumber:req.params.searchby},
             ]});
-
-        }
-        
+        } 
         res.send(cursor);
     }catch(err){
         console.log(err);
@@ -103,15 +118,12 @@ router.get("/:id",async(req,res)=>{
 });
 
 router.get("/date/:date",async (req,res)=>{
-
     try{
         const cursor = await callData.find({Id:req.user,date: { $gte:  req.params.date} });
         res.send(cursor);
-
     }catch(err){
         res.send(err);
     }
-
 });
 
 router.get("/daterange/:datelow/:datehigh",async (req,res)=>{
@@ -137,16 +149,19 @@ router.get("/daterange/:datelow/:datehigh",async (req,res)=>{
 
 });
 
-router.get("/getallocations/",async (req,res)=>{
-    try{
+// router.get("/sas", async (req,res)=>{
+//     console.log("hereeeeeeeeeeeeeee")
+//     console.log("allocations",req.user)
+//     res.send("sent")
+//     // try{
 
-        const cursor = await callData.find({allocatedTo:req.user,});
-        res.send(cursor);
+//     //     const cursor = await callData.find({allocatedTo:req.user});
+//     //     res.send(cursor);
 
-    }catch(err){
-        res.send(err);
-    }
-});
+//     // }catch(err){
+//     //     res.send(err);
+//     // }
+// });
 
 
 router.post("/",async (req,res)=>{
@@ -219,29 +234,29 @@ router.patch("/:id",async (req,res)=>{
 });
 
 
-router.patch("/:id",async (req,res)=>{
+// router.patch("/:id",async (req,res)=>{
 
-    try{
-    var toUpdate = await callData.findOne({Id:req.user,_id:req.params.id});
-    console.log(toUpdate)
-    if(!toUpdate || !toUpdate.history){ 
-        res.send("No Such post by you")
-    }
-    var updated = toUpdate["history"].concat(req.body.history);
-     updated = await callData.updateOne(
-        {_id:req.params.id},
-        {
-            $set:{history:updated}
-        }
-    );
+//     try{
+//     var toUpdate = await callData.findOne({Id:req.user,_id:req.params.id});
+//     console.log(toUpdate)
+//     if(!toUpdate || !toUpdate.history){ 
+//         res.send("No Such post by you")
+//     }
+//     var updated = toUpdate["history"].concat(req.body.history);
+//      updated = await callData.updateOne(
+//         {_id:req.params.id},
+//         {
+//             $set:{history:updated}
+//         }
+//     );
 
-    res.send(await callData.findOne({Id:req.user,_id:req.params.id}));}
-    catch(err){
-        res.send(err)
-    }
+//     res.send(await callData.findOne({Id:req.user,_id:req.params.id}));}
+//     catch(err){
+//         res.send(err)
+//     }
 
 
-});
+// });
 
 
 router.put("/:id",async (req,res)=>{

@@ -11,9 +11,7 @@ const talktime = require("../Models/Talktime");
 router.get("/",async (req,res)=>{
 
     try{
-
         console.log(req.user)
-
         res.send(await talktime.find({Id:req.user}));
         
 

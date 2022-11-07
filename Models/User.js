@@ -13,6 +13,9 @@ const userSchema = new mongoose.Schema({
         enum:["user","admin","superadmin"],
         default:["user","admin"]
     },
+    addedDesignation:{
+        type:String
+    },
     team:{
         type:mongoose.Schema.ObjectId,
         ref:'User',
@@ -51,6 +54,21 @@ const userSchema = new mongoose.Schema({
     date:{
         type:Date,
         default:Date.now
+    },
+    addedDesignation : {
+        type:String
+    },
+    accesstoWeb :{
+        type:Boolean
+    },
+    playcall : {
+        type:Boolean
+    },
+    download :{
+        type:Boolean
+    },
+    trackcall :{
+        type:Boolean
     }
 });
 

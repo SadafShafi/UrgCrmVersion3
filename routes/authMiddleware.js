@@ -10,7 +10,6 @@ module.exports = function auth(req,res,next){
     {
         console.log("No Token")
         return res.status(401).send('Access Denied');
-
     }
 
     try{

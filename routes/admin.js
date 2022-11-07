@@ -8,6 +8,8 @@ const router = express.Router();
 const callData = require("../Models/Calldata");
 const crmFields = require("../Models/CRMfields");
 const user = require('../Models/User');
+const desi = require("../Models/DesignationsAdded");
+const process = require("../Models/Process");
 
 // router.post("/custom",async (req,res)=>{
 //     console.log(req.body.custom);
@@ -21,6 +23,97 @@ const user = require('../Models/User');
 //         res.send(err);
 //     }
 // });
+
+
+router.get("/process",async (req,res)=>{
+        // console.log(req.user);
+
+        // res.send(await process.find({
+        
+        // }));
+        try{
+            res.send(await process.find({by:req.user}));
+        }catch(err){
+            res.send(err)
+        }
+});
+
+router.post("/process",async (req,res)=>{
+    try{
+        const data = new process({
+            name:req.body.name,
+            type:req.body.type,
+            user:req.body.user,
+            by:req.user
+        });
+        res.send(await data.save())
+    }catch(err){
+        res.send(err);
+    }
+});
+
+// router.post("/process",async (req,res)=>{
+//     try{
+//         const data = new process({
+//             name:req.body.name,
+//             type:req.body.type,
+//             user:req.body.user
+//         });
+//         res.send(await data.save())
+//     }catch(err){
+//         res.send(err);
+//     }
+// });
+
+router.patch("/process/:id",async (req,res)=>{
+
+    try{
+    var toUpdate = await process.findOne({Id:req.user,_id:req.params.id});
+    console.log(toUpdate)
+    if(!toUpdate ){ 
+        
+        return res.send("No Such post by you");
+    }
+    else{
+    var updated = toUpdate.user.concat(req.body.user);
+     updated = await process.updateOne(
+        {_id:req.params.id},
+        {
+            $set:{user:updated}
+        }
+    );
+
+    res.send(updated)
+
+    }
+    }catch(err){
+        res.send(err)
+    }
+});
+
+router.get("/designations",async (req,res)=>{
+    try{
+        console.log(req.user);
+        res.send(await desi.find({by:req.user}));
+    }catch(err){
+        res.send(err);
+    }
+});
+
+router.post("/designations",async (req,res)=>{
+
+    try{
+        console.log("designations post");
+        const data = new desi({
+            designation : req.body.designation,
+            by: req.user
+        });
+        const savedUser = await data.save();
+        res.send(savedUser);
+    }catch(err){
+        res.send(err);
+    }
+});
 
 router.get("/members",async (req,res)=>{
     try{
@@ -45,6 +138,7 @@ router.get("/members/:Id",async (req,res)=>{
 router.patch("/allocate/:userId/:callId",async (req,res)=>{
 
     try{
+        console.log(req.params.callId,req.params.userId)
         await callData.updateOne(
             {_id:req.params.callId},
             {
