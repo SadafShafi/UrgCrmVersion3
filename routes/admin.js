@@ -115,6 +115,21 @@ router.post("/designations",async (req,res)=>{
     }
 });
 
+router.delete("/designations/:todelete",async (req,res)=>{
+    try{
+        console.log(req.user,"deletion started");
+        ans = await desi.deleteOne({by:req.user,designation:req.params.todelete})
+        desi.save()
+        res.send(ans);
+    }catch(err){
+        res.send(err);
+    }
+});
+
+
+
+
+
 router.get("/members",async (req,res)=>{
     try{
         console.log("try");

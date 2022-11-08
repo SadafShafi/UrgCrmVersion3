@@ -16,6 +16,8 @@ router.post("/", async (req,res)=>{
         mobNumber:req.body.mobNumber
     });
 
+    res.send({"message":"to be worked out after version 2"});
+
     console.log(isUserPresent);
 
     if(!isUserPresent) res.send("This User is not registered");
@@ -30,10 +32,7 @@ router.post("/", async (req,res)=>{
     const hashedPassword = await bcrypt.hash(r,salt);
         
     // Update password
-    // var toUpdate = await User.findOne({email:req.body.email});
-
-
-    
+    // var toUpdate = await User.findOne({email:req.body.email});    
      updated = await User.updateOne(
         {email:req.body.email,
         mobNumber:req.body.mobNumber},
@@ -65,42 +64,37 @@ router.post("/", async (req,res)=>{
     }
 });
 
-
-
 router.post("/insideapp",authToken, async (req,res)=>{
-
-    console.log(req.user);
-
-    var isUserPresent = await User.findOne({
-        _id : req.user
-    });
-
-    console.log(isUserPresent);
-
-    if(!isUserPresent) res.send("This user is not registered");
-    else{
-
-    r = req.body.password;
-
-    //Hash the password 
-    const salt = await bcrypt.genSalt(7);
-    const hashedPassword = await bcrypt.hash(r,salt);
-        
-    // Update password
-    // var toUpdate = await User.findOne({email:req.body.email});
-
-
-    
-     updated = await User.updateOne(
-        {email:req.body.email,
-        mobNumber:req.body.mobNumber},
-        {
-            $set:{password:hashedPassword}
+    try{
+        var isUserPresent = await User.findOne({
+            _id : req.user
         });
-    console.log(updated)
 
-        res.send("New Password Set");
+        console.log(isUserPresent);
 
+        if(!isUserPresent) res.send("This user is not registered");
+        else{
+
+        r = req.body.password;
+
+        //Hash the password 
+        const salt = await bcrypt.genSalt(7);
+        const hashedPassword = await bcrypt.hash(r,salt);   
+        // Update password
+        // var toUpdate = await User.findOne({email:req.body.email});  
+        updated = await User.updateOne(
+            {email:req.body.email,
+            mobNumber:req.body.mobNumber},
+            {
+                $set:{password:hashedPassword}
+            });
+        console.log(updated)
+
+            res.send("New Password Set");
+        }
+    }catch(err){
+            console.log(err);
+            res.send(err);
     }
 });
 module.exports = router;
