@@ -11,7 +11,7 @@ const Process = new mongoose.Schema({
 
         type:{
             type:String,
-            enum : ["Inbound & Outbound","Inbound","Inbound"]
+            enum : ["Inbound & Outbound","Oubound","Inbound"]
         },
 
         by : {

@@ -5,9 +5,7 @@ const jwt = require('jsonwebtoken');
 const nodemailer = require("nodemailer");
 // require('dotenv').config({ path: "../.env" })
 
-
 const router = express.Router();
-
 
 const callData = require("../Models/Calldata");
 const crmFields = require("../Models/CRMfields");
@@ -47,6 +45,16 @@ router.post("/companydetails",async (req,res)=>{
     }
 });
 
+router.put("/companydetails",async (req,res)=>{    
+    var ans = await companyDetails.findOneAndUpdate(
+        req.user,
+        req.body,
+        {new: true}
+    );
+    console.log(ans);
+    res.send({"message":"upadted"});
+});
+
 router.get("/companydetails",async (req,res)=>{
     try{
         res.send(await companyDetails.find({by:req.user}));
@@ -55,16 +63,13 @@ router.get("/companydetails",async (req,res)=>{
     }
 });
 
-
 router.get("/transferallocations/:from/:to",async (req,res)=>{
     console.log("license")
     try{
         var ans = await callData.find({allocatedTo:req.params.from});
         ans.forEach(async (x)=>{
-
             callData.findOneAndUpdate({_id:x._id},
-                {$set:{allocatedTo:req.params.to}}
-                )
+                {$set:{allocatedTo:req.params.to}})
         });
         res.send({"message":"Allocations changed"});
     }catch(err){
@@ -73,12 +78,10 @@ router.get("/transferallocations/:from/:to",async (req,res)=>{
 });
 
 router.get("/reports/:datefrom/:dateto/:type",async (req,res)=>{
-    console.log("reports");
-    
+    console.log("reports");    
     console.log("Email Admin")
     // console.log(process.env.EMAIL_SENDER);
     try{
-
         // var userEmail = user.findOne({_id:req.user});
         // userEmail = userEmail.email;
         // email to the super admin and requester
@@ -115,8 +118,7 @@ router.get("/advancedreports/:datefrom/:dateto/:type",async (req,res)=>{
     }catch(err){
         res.send({"message":"official emails to be added"})
     }
-
-})
+});
 
 
 router.get("/license",async (req,res)=>{
@@ -142,17 +144,37 @@ router.get("/license/:number",async (req,res)=>{
     }
 });
 
-// router.put("/license/:id",async (req,res)=>{
+router.put("/license/:id",async (req,res)=>{
+
+    console.log(req.params.id)
+
+    await license.findOneAndUpdate(
+        {_id : req.params.id},
+        req.body,
+        {new: true},
+
+        (err, data) => {
+            if (err) return res.status(500).send(err);
+            return res.send(data);
+        })
+});
+
+// router.post("/license/:id",async (req,res)=>{
 
 //     console.log(req.params.id)
 
-//     await license.findByIdAndUpdate(
-//         req.params.id,
+//     await license.findOneAndUpdate(
+//         {by : req.body.user},
+//         req.body,
+//         {new: true},
+
 //         (err, data) => {
 //             if (err) return res.status(500).send(err);
 //             return res.send(data);
 //         })
 // });
+
+
 
 router.get("/process",async (req,res)=>{
         // console.log(req.user);
@@ -400,9 +422,7 @@ router.get("/daterange/:datelow/:datehigh",async (req,res)=>{
 
 
 // router.put("/:id",async (req,res)=>{
-
 //     console.log("putter")
-
 //     callData.findByIdAndUpdate(
 //         // the id of the item to find
 //         req.params.id,
@@ -422,7 +442,5 @@ router.get("/daterange/:datelow/:datehigh",async (req,res)=>{
 //             return res.send(data);
 //         }
 //     )
-
-
 // });
 module.exports = router;

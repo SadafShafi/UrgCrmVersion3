@@ -8,11 +8,6 @@ const License = new mongoose.Schema({
             // required:true
         },
 
-        type:{
-            type:String,
-            enum : ["Inbound & Outbound","Inbound","Inbound"]
-        },
-
         by : {
             type:mongoose.Schema.ObjectId,
             refrence:'User'
@@ -26,10 +21,12 @@ const License = new mongoose.Schema({
             refrence:'User'
         },
         expireson : {
-
             type:Date,
             default:Date.now() + 8
 
+        },
+        designation : {
+            type:String,
         }
 
     

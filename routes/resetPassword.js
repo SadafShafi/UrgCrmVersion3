@@ -68,29 +68,36 @@ router.post("/", async (req,res)=>{
 
 router.post("/insideapp",authToken, async (req,res)=>{
     try{
+        console.log("Resetting the password")
         var isUserPresent = await User.findOne({
             _id : req.user
         });
-
         console.log(isUserPresent);
-
         if(!isUserPresent) res.send("This user is not registered");
         else{
 
-        r = req.body.password;
+            r = req.body.password;
 
-        //Hash the password 
-        const salt = await bcrypt.genSalt(7);
-        const hashedPassword = await bcrypt.hash(r,salt);   
-        // Update password
-        // var toUpdate = await User.findOne({email:req.body.email});  
-        updated = await User.updateOne(
-            {email:req.body.email,
-            mobNumber:req.body.mobNumber},
-            {
-                $set:{password:hashedPassword}
-            });
-        console.log(updated)
+            //Hash the password 
+            const salt = await bcrypt.genSalt(7);
+            const hashedPassword = await bcrypt.hash(r,salt);   
+            // Update password
+            // var toUpdate = await User.findOne({email:req.body.email});  
+            var ans = await User.findOneAndUpdate(
+                {_id:req.user},
+                {password:hashedPassword},
+                // {new: true}
+            );
+            console.log(ans);
+
+        // updated = await User.updateOne(
+        //     {email:req.body.email,
+        //     mobNumber:req.body.mobNumber},
+        //     {
+        //         $set:{password:hashedPassword}
+        //     });
+        //     await updated.save();
+        // console.log(updated);
 
             res.send({"message":"New Password Set"});
         }
