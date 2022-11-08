@@ -6,11 +6,13 @@ const nodemailer = require("nodemailer");
 require('dotenv').config()
 
 const router = express.Router();
-
+ 
 const User = require("../Models/User");
 const authToken = require('./authMiddleware');
 
 router.post("/", async (req,res)=>{
+    console.log("<.............................")
+    console.log(process.env.EMAIL_SENDER)
 
     var isUserPresent = await User.findOne({
         mobNumber:req.body.mobNumber
@@ -90,7 +92,7 @@ router.post("/insideapp",authToken, async (req,res)=>{
             });
         console.log(updated)
 
-            res.send("New Password Set");
+            res.send({"message":"New Password Set"});
         }
     }catch(err){
             console.log(err);

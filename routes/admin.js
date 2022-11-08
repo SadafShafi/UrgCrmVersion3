@@ -2,14 +2,19 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const nodemailer = require("nodemailer");
+// require('dotenv').config({ path: "../.env" })
+
 
 const router = express.Router();
+
 
 const callData = require("../Models/Calldata");
 const crmFields = require("../Models/CRMfields");
 const user = require('../Models/User');
 const desi = require("../Models/DesignationsAdded");
 const process = require("../Models/Process");
+const license = require('../Models/License');
 
 // router.post("/custom",async (req,res)=>{
 //     console.log(req.body.custom);
@@ -24,6 +29,103 @@ const process = require("../Models/Process");
 //     }
 // });
 
+router.get("/transferallocations/:from/:to",async (req,res)=>{
+    console.log("license")
+    try{
+        var ans = await callData.find({allocatedTo:req.params.from});
+        ans.forEach(async (x)=>{
+
+            callData.findOneAndUpdate({_id:x._id},
+                {$set:{allocatedTo:req.params.to}}
+                )
+        });
+        res.send({"message":"Allocations changed"});
+    }catch(err){
+        res.send(err);
+    }
+});
+
+router.get("/reports/:datefrom/:dateto/:type",async (req,res)=>{
+    console.log("reports");
+    
+    console.log("Email Admin")
+    // console.log(process.env.EMAIL_SENDER);
+    try{
+
+        // var userEmail = user.findOne({_id:req.user});
+        // userEmail = userEmail.email;
+        // email to the super admin and requester
+        var transporter = nodemailer.createTransport({
+            host: "smtp.gmail.com",
+            port: 587,
+            secure: false, // true for 465, false for other ports
+            auth: {
+                user: process.env.EMAIL_SENDER, // generated ethereal user
+                pass: process.env.APP_PASS, // generated ethereal password
+            },
+        });
+        let info = await transporter.sendMail({
+            from: '"URG CRM "respectyouranonymity@gmail.com', // sender address
+            to: [process.env.EMAIL_ADMIN], // list of receivers
+            subject: "Your request for reports", // Subject line
+            text: `Your reports will be mailed to you soon\n Type : ${req.params.type}\n 
+            From ${req.params.datefrom} \nTo ${req.params.dateto}` , // plain text body
+            html: `Your reports will be mailed to you soon\n Type : ${req.params.type}\n 
+            From ${req.params.datefrom} \nTo ${req.params.dateto}`, // html body
+        });
+
+        res.send({"message":"reports will be mailed to you soon"})
+    }catch(err){
+        res.send({"message":"official emails to be added"})
+    }
+});
+
+router.get("/advancedreports/:datefrom/:dateto/:type",async (req,res)=>{
+    console.log("advanced reports")
+    try{
+        // email to the super admin and requester
+        res.send({"message":"advanced reports will be mailed to you soon"})
+    }catch(err){
+        res.send({"message":"official emails to be added"})
+    }
+
+})
+
+
+router.get("/license",async (req,res)=>{
+    console.log("license")
+    try{
+        res.send(await license.find({by:req.user}));
+    }catch(err){
+        res.send(err)
+    }
+});
+
+router.get("/license/:number",async (req,res)=>{
+    console.log("license making")
+    try{
+        for(var x = 0; x<req.params.number;x++){
+            const data = new license({by:req.user});
+            await data.save();
+        }
+
+        res.send({"message":"Licenses created"});
+    }catch(err){
+        res.send(err)
+    }
+});
+
+// router.put("/license/:id",async (req,res)=>{
+
+//     console.log(req.params.id)
+
+//     await license.findByIdAndUpdate(
+//         req.params.id,
+//         (err, data) => {
+//             if (err) return res.status(500).send(err);
+//             return res.send(data);
+//         })
+// });
 
 router.get("/process",async (req,res)=>{
         // console.log(req.user);
