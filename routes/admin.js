@@ -15,6 +15,7 @@ const user = require('../Models/User');
 const desi = require("../Models/DesignationsAdded");
 const process = require("../Models/Process");
 const license = require('../Models/License');
+const companyDetails = require('../Models/CompanyDetails');
 
 // router.post("/custom",async (req,res)=>{
 //     console.log(req.body.custom);
@@ -28,6 +29,32 @@ const license = require('../Models/License');
 //         res.send(err);
 //     }
 // });
+
+router.post("/companydetails",async (req,res)=>{
+    try{
+        const data = new companyDetails({
+            name:req.body.name,
+            address:req.body.address,
+            city:req.body.city,
+            state:req.body.state,
+            country:req.body.country,
+            pincode:req.body.pincode,
+            by:req.user,
+        });
+        res.send(await data.save())
+    }catch(err){
+        res.send(err);
+    }
+});
+
+router.get("/companydetails",async (req,res)=>{
+    try{
+        res.send(await companyDetails.find({by:req.user}));
+    }catch(err){
+        res.send(err);
+    }
+});
+
 
 router.get("/transferallocations/:from/:to",async (req,res)=>{
     console.log("license")
