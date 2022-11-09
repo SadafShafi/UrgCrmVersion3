@@ -298,6 +298,130 @@ router.get("/members/:Id",async (req,res)=>{
     } 
 });
 
+router.get("/downloadrecordings/:datefrom/:dateto",async (req,res)=>{
+    try{
+        // res.send(await user.find({team:req.user,
+        //     _id:req.params.Id}));
+        res.send({"message":"no recordings here"})
+    }catch(err){
+        res.send(err);
+    } 
+});
+
+router.post("/addcustomers",async (req, res)=>{
+    try{
+        req.body.datalist.forEach(async (datapoint)=>{
+            const isthere = await callData.findOne({mobNumber:datapoint.mobNumber});
+            console.log(req.user)
+            if(isthere && req.body.edit){
+                console.log("Number already present use Update method");
+                await callData.findOneAndUpdate(
+                    {mobNumber : datapoint.mobNumber},
+                    datapoint,
+                    {new: true},
+                    (err, data) => {
+                        if (err) console.log(err);
+                        // return res.send(data);
+                        console.log(data)
+                    });
+            }
+            else{
+                
+                const data = new callData({
+                    name: datapoint.name,          
+                    email:datapoint.email, 
+                    mobNumber:datapoint.mobNumber,
+                    company :datapoint.company,
+                    address:datapoint.address,
+                    city:datapoint.city,
+                    state:datapoint.state,
+                    country:datapoint.country,
+                    pin:datapoint.pin,
+                    fixed:datapoint.fixed,
+                    custom:datapoint.custom,
+                    history:datapoint.history,
+                    status:datapoint.status,
+                    Id:req.user
+                });
+                const savedField = await data.save();
+            }
+        });
+        res.send({"message":"Data Saved"});
+    }catch(err){
+        console.log("error")
+        console.log(err)
+        res.send(err)
+    }
+    
+})
+
+
+
+
+router.post("/addallocations",async (req, res)=>{
+    try{
+        req.body.datalist.forEach(async (datapoint)=>{
+            const isthere = await callData.findOne({mobNumber:datapoint.mobNumber});
+            console.log(req.user)
+            if(isthere && req.body.edit){
+                console.log("Number already present use Update method");
+                await callData.findOneAndUpdate(
+                    {mobNumber : datapoint.mobNumber},
+                    datapoint,
+                    {new: true},
+                    (err, data) => {
+                        if (err) console.log(err);
+                        // return res.send(data);
+                        console.log(data)
+                    });
+            }
+            else{
+                
+                const data = new callData({
+                    name: datapoint.name,          
+                    email:datapoint.email, 
+                    mobNumber:datapoint.mobNumber,
+                    company :datapoint.company,
+                    address:datapoint.address,
+                    city:datapoint.city,
+                    state:datapoint.state,
+                    country:datapoint.country,
+                    pin:datapoint.pin,
+                    fixed:datapoint.fixed,
+                    custom:datapoint.custom,
+                    history:datapoint.history,
+                    status:datapoint.status,
+                    allocatedTo:datapoint.allocatedTo,
+                    Id:req.user
+                });
+                const savedField = await data.save();
+            }
+        });
+        res.send({"message":"Data Saved"});
+    }catch(err){
+        console.log("error")
+        console.log(err)
+        res.send(err)
+    }
+    
+})
+
+router.delete("/deletecustomers",async (req,res)=>{
+    try{
+        req.body.numberlist.forEach(async (number)=>{
+            await callData.remove({mobNumber:number});
+        });
+
+        res.send({"message":"all the users deleted"})
+
+
+    }catch(err){
+        console.log(err)
+        res.send(err)
+    }
+});
+
+
 router.patch("/allocate/:userId/:callId",async (req,res)=>{
 
     try{
@@ -316,6 +440,24 @@ router.patch("/allocate/:userId/:callId",async (req,res)=>{
 
 });
 
+router.patch("/deleteallocations/",async (req,res)=>{
+
+    try{
+        console.log(req.params.callId,req.params.userId)
+        req.body.numberlist.forEach(async (number)=>{
+            await user.updateOne(
+                {mobNumber:number},
+                {
+                    $set:{allocatedTo:""}
+                });
+
+        });
+        res.send( {"message":"allocations deleted"})
+    }catch(err){
+        res.send(err);
+    }
+
+});
 
 router.post("/createuser",async (req,res)=>{
 
