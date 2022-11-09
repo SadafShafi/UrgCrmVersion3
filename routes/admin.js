@@ -278,9 +278,6 @@ router.delete("/designations/:todelete",async (req,res)=>{
 });
 
 
-
-
-
 router.get("/members",async (req,res)=>{
     try{
         console.log("try");
@@ -335,10 +332,20 @@ router.post("/createuser",async (req,res)=>{
             email: req.body.email, 
             mobNumber: req.body.mobNumber,
             company : req.body.company,
-            teamCount : req.body.teamCount,
-            salesCode : req.body.salesCode,
+            address:req.body.address,
+            city:req.body.city,
+            state:req.body.state,
+            pin:req.body.pin,
+            country:req.body.country,
+            teamCount : req.body.teamcount,
+            salesCode : req.body.salescode,
             password : hashedPassword,
             designation:req.body.designation,
+            addedDesignation : req.body.addedDesignation,
+            accesstoWeb : req.body.accesstoWeb,
+            playcall : req.body.playcall,
+            download : req.body.download,
+            trackcall : req.body.trackcall,
             team:req.user
         });
         const savedUser = await User.save();
