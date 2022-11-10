@@ -3,6 +3,10 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const nodemailer = require("nodemailer");
+const fs = require('fs');
+const json2csv = require('json2csv').parse;
+const path = require('path')
+
 // require('dotenv').config({ path: "../.env" })
 
 const router = express.Router();
@@ -77,32 +81,45 @@ router.get("/transferallocations/:from/:to",async (req,res)=>{
     }
 });
 
+function datatocsv(fieldArray,dataArray){
+    try{
+        csv = json2csv(dataArray, { fieldArray });
+        const filePath = path.join(__dirname, req.user + ".csv")
+        fs.writeFile(filePath, csv,(x)=>console.log("File Made"));
+        return true;
+    }catch(err){
+        console.log(err);
+        return err;
+    }
+}
+
 router.get("/reports/:datefrom/:dateto/:type",async (req,res)=>{
     console.log("reports");    
-    console.log("Email Admin")
+    console.log("Email Admin");
     // console.log(process.env.EMAIL_SENDER);
     try{
+
         // var userEmail = user.findOne({_id:req.user});
         // userEmail = userEmail.email;
         // email to the super admin and requester
-        var transporter = nodemailer.createTransport({
-            host: "smtp.gmail.com",
-            port: 587,
-            secure: false, // true for 465, false for other ports
-            auth: {
-                user: process.env.EMAIL_SENDER, // generated ethereal user
-                pass: process.env.APP_PASS, // generated ethereal password
-            },
-        });
-        let info = await transporter.sendMail({
-            from: '"URG CRM "respectyouranonymity@gmail.com', // sender address
-            to: [process.env.EMAIL_ADMIN], // list of receivers
-            subject: "Your request for reports", // Subject line
-            text: `Your reports will be mailed to you soon\n Type : ${req.params.type}\n 
-            From ${req.params.datefrom} \nTo ${req.params.dateto}` , // plain text body
-            html: `Your reports will be mailed to you soon\n Type : ${req.params.type}\n 
-            From ${req.params.datefrom} \nTo ${req.params.dateto}`, // html body
-        });
+        // var transporter = nodemailer.createTransport({
+        //     host: "smtp.gmail.com",
+        //     port: 587,
+        //     secure: false, // true for 465, false for other ports
+        //     auth: {
+        //         user: process.env.EMAIL_SENDER, // generated ethereal user
+        //         pass: process.env.APP_PASS, // generated ethereal password
+        //     },
+        // });
+        // let info = await transporter.sendMail({
+        //     from: '"URG CRM "respectyouranonymity@gmail.com', // sender address
+        //     to: [process.env.EMAIL_ADMIN], // list of receivers
+        //     subject: "Your request for reports", // Subject line
+        //     text: `Your reports will be mailed to you soon\n Type : ${req.params.type}\n 
+        //     From ${req.params.datefrom} \nTo ${req.params.dateto}` , // plain text body
+        //     html: `Your reports will be mailed to you soon\n Type : ${req.params.type}\n 
+        //     From ${req.params.datefrom} \nTo ${req.params.dateto}`, // html body
+        // });
 
         res.send({"message":"reports will be mailed to you soon"})
     }catch(err){
@@ -403,8 +420,7 @@ router.post("/addallocations",async (req, res)=>{
         console.log(err)
         res.send(err)
     }
-    
-})
+});
 
 router.delete("/deletecustomers",async (req,res)=>{
     try{
@@ -593,3 +609,8 @@ router.get("/daterange/:datelow/:datehigh",async (req,res)=>{
 //     )
 // });
 module.exports = router;
+
+
+
+
+
