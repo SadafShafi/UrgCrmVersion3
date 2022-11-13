@@ -76,7 +76,6 @@ router.post("/login",async (req,res)=>{
             process.env.SECRET_KEY);
         // console.log({_id:user._id,designation:user.designation});
         res.header('auth-token',token).send({"auth-token":token,"name":user.name});
-
     }catch(err){
         console.log("error")
         console.log(err)
