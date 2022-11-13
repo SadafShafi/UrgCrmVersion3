@@ -19,6 +19,7 @@ const userSchema = new mongoose.Schema({
     team:{
         type:mongoose.Schema.ObjectId,
         ref:'User',
+        // default:this.get('_id'),
         // required:true
     },
     email:{

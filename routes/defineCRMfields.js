@@ -4,6 +4,10 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 
+const isAdmin = require('./isAdminMiddleware');
+
+const user = require("../Models/User");
+
 const router = express.Router();
 
 const crmFieldsdefined = require("../Models/CrmFieldDefined");
@@ -12,41 +16,39 @@ const crmFieldsdefined = require("../Models/CrmFieldDefined");
 // only for admin
 
 
-router.post("/",async (req,res)=>{
-
+router.post("/",isAdmin,async (req,res)=>{
     try{
-        await crmFieldsdefined.remove();
+        console.log(req.user)
+        deleter = await crmFieldsdefined.deleteMany({by:req.user});
+        // console.log(deleter)
         const data = new crmFieldsdefined({
-
-            fixed : req.body.fixed,
-            custom:req.body.custom
-
+            custom:req.body.custom,
+            by:req.user
         });
-
-        const savedField = await data.save();
-        res.send(savedField)
-
+       const savedField = await data.save();
+        res.send(savedField);
     }catch(err){
         console.log("error")
         console.log(err)
         res.send(err)
     }
-    
 });
 
 router.get("/",async (req,res)=>{
 
     try{
-
         
-        res.send(await crmFieldsdefined.find())
+        var myuser = await user.find({_id:req.user});
+        console.log(myuser)
+        team = myuser[0].team;
+        res.send(await crmFieldsdefined.find({by:team}
+        ));
 
     }catch(err){
         console.log("error")
         console.log(err)
         res.send(err)
     }
-    
 });
 
 module.exports = router;

@@ -50,9 +50,9 @@ const CRMFields = new mongoose.Schema({
             type:Number
         },
 
-        fixed:{
-            type:JSON
-        },
+        // fixed:{
+        //     type:JSON
+        // },
 
         custom:{
             type:JSON

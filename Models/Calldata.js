@@ -87,9 +87,9 @@ const callData = new mongoose.Schema({
         pin:{
             type:Number
         },
-        fixed:{
-            type:JSON
-        },
+        // fixed:{
+        //     type:JSON
+        // },
         custom:{
             type:JSON
         },

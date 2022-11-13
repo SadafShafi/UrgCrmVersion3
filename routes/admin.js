@@ -479,7 +479,6 @@ router.patch("/deleteallocations/",async (req,res)=>{
                 {
                     $set:{allocatedTo:""}
                 });
-
         });
         res.send( {"message":"allocations deleted"})
     }catch(err){

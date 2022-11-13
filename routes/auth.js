@@ -27,19 +27,29 @@ router.post("/register", async (req,res)=>{
             email: req.body.email, 
             mobNumber: req.body.mobNumber,
             company : req.body.company,
-            teamCount : req.body.teamCount,
-            salesCode : req.body.salesCode,
+            address:req.body.address,
+            city:req.body.city,
+            state:req.body.state,
+            pin:req.body.pin,
+            country:req.body.country,
+            teamCount : req.body.teamcount,
+            salesCode : req.body.salescode,
             password : hashedPassword,
-            designation:req.body.designation
+            // team:req.user
         });
-        const savedUser = await user.save();
+        var savedUser = await user.save();
+        console.log("saveduser")
+        console.log(savedUser._id)
+        let updated = await User.updateOne({_id:savedUser._id},
+            {$set:{team:savedUser._id}});
+        // console.log(updated)
+        savedUser = await User.find({_id:savedUser._id});
         res.send(savedUser);
         // return
     }catch(err){
         res.status(400).send(err);
         console.log(err);
     }
-
 });
 
 router.post("/login",async (req,res)=>{

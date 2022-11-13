@@ -4,14 +4,17 @@ const mongoose = require('mongoose');
 const CRMFieldsDefined = new mongoose.Schema({
 
 
-        fixed:{
-            type:JSON
-        },
+        // fixed:{
+        //     type:JSON
+        // },
 
         custom:{
             type:JSON
         },
-
+        by:{
+            type:mongoose.Schema.ObjectId,
+            refrence:'User'
+        },
         date:{
             type:Date,
             default:Date.now
