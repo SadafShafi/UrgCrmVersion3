@@ -49,12 +49,12 @@ router.get("/",async (req,res)=>{
             ans = ans[0].custom
             var keys = []
             for (var key in ans){
-                keys.push(key);
+                keys.push({"field":key});
             }
             console.log(keys);
-            res.send({"keys":keys});
+            res.send(keys);
         }catch{
-            res.send({"keys":[]});
+            res.send([]);
         }
         
         // var keys = []
