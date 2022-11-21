@@ -41,8 +41,29 @@ router.get("/",async (req,res)=>{
         var myuser = await user.find({_id:req.user});
         console.log(myuser)
         team = myuser[0].team;
-        res.send(await crmFieldsdefined.find({by:team}
-        ));
+
+        var ans = await crmFieldsdefined.find({by:team})
+        console.log("*******************************************************")
+        try{
+
+            ans = ans[0].custom
+            var keys = []
+            for (var key in ans){
+                keys.push(key);
+            }
+            console.log(keys);
+            res.send({"keys":keys});
+        }catch{
+            res.send({"keys":[]});
+        }
+        
+        // var keys = []
+        // for (var key in ans){
+        //     keys.push(key);
+        // }
+        // console.log(keys);
+        res.send(
+        );
 
     }catch(err){
         console.log("error")
