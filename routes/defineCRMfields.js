@@ -44,16 +44,25 @@ router.get("/",async (req,res)=>{
 
         var ans = await crmFieldsdefined.find({by:team})
         console.log("*******************************************************")
+        // console.log(ans[0].custom);
         try{
 
             ans = ans[0].custom
+            console.log(ans)
             var keys = []
-            for (var key in ans){
-                keys.push({"field":key});
-            }
+            // for (var key in ans){
+            //     keys.push({"field":key});
+            // }
+
+            ans.forEach( (x)=>{
+                keys.push({"field":x});
+                console.log(x)
+            });
             console.log(keys);
+            arr = ans[0].custom
             res.send(keys);
-        }catch{
+        }catch(err){
+            console.log(err)
             res.send([]);
         }
         
